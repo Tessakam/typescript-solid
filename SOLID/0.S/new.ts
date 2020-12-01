@@ -31,13 +31,13 @@ class Car {
     }
 
     drive(status:boolean) {
-        if(status === false || this._fuel <= 0) {
+        if(!status || this._fuel <= 0) {
             //what I am doing here is a good principle called "failing early"
             // If you have some conditions you need to check, that will exclude most of the code in your function check that first
             // This prevents your "happy path" of code to be deeply indented.
             return;
         }
-        
+
         this._fuel -= 1;
         this._miles += this.FUEL_MILEAGE;
     }
@@ -62,11 +62,14 @@ class Engine {
 
 type musicOnOff = "Music on!" |"Music off!"; // on top - otherwise error
 class MusicPlayer {
+
     private _musicLevel : number = 0;
     private _oldMusicLevel : number = 50;
+    private _status : musicOnOff; //add new property with getter/setter
 
-    //add new property with getter/setter
-    private _status: musicOnOff;
+    constructor(status: musicOnOff) {
+        this._status = status;
+    }
 
     get status(): musicOnOff {
         return this._status;
@@ -87,12 +90,12 @@ class MusicPlayer {
 
     turnMusicOn() {
         this._musicLevel = this._oldMusicLevel;
-        this._status = "Music on!"; // see type above
+        this._status = "Music off!"; // see type above
     }
 
     turnMusicOff() {
         this._musicLevel = 0;
-        this._status = "Music off!"; // see type above
+        this._status = "Music on!"; // see type above
     }
 }
 
@@ -114,35 +117,35 @@ let engine = new Engine();
 let musicPlayer = new MusicPlayer();
 
 musicToggleElement.addEventListener('click', () => {
-    if(car.musicLevel === 0) {
-        car.turnMusicOn();
-        musicSliderElement.value = car.musicLevel.toString();
+    if(musicPlayer.musicLevel === 0) {
+        musicPlayer.turnMusicOn();
+        musicSliderElement.value = musicPlayer.musicLevel.toString();
         musicToggleElement.innerText = 'Turn music off';
         return;
     }
     musicToggleElement.innerText = 'Turn music on';
-    car.turnMusicOff();
+    musicPlayer.turnMusicOff();
 });
 
 //I use input instead of change, because then the value changes when I move the mouse, not only on release
 musicSliderElement.addEventListener('input', (event) => {
     let target = <HTMLFormElement>(event.target);
 
-    car.musicLevel = target.value;
-    audioElement.volume = car.musicLevel / 100;
+    musicPlayer.musicLevel = target.value;
+    audioElement.volume = musicPlayer.musicLevel / 100;
 
     //@todo when you are repeating the same text over and over again maybe we should have made some constants for it? Can you do improve on this?
-    musicToggleElement.innerText = car.musicLevel ? 'Turn music off' : 'Turn music on';
+    musicToggleElement.innerText = musicPlayer.musicLevel ? 'Turn music off' : 'Turn music on';
 });
 
 engineToggleElement.addEventListener('click', () => {
-    if(car.engineStatus) {
-        car.turnEngineOff();
+    if(engine.status) {
+        engine.turnEngineOff();
         engineToggleElement.innerText = 'Turn engine on';
         return;
     }
     engineToggleElement.innerText = 'Turn engine off';
-    car.turnEngineOn();
+    engine.turnEngineOn();
 });
 
 addFuelForm.addEventListener('submit', (event) => {
@@ -161,7 +164,7 @@ setInterval(() => {
     // This .toString() will actually convert the value in JavaScript from an integer to a string
     fuelLevelElement.innerText = car.fuel.toString();
 
-    if(car.musicLevel === 0) {
+    if(musicPlayer.musicLevel === 0) {
         audioElement.pause();
     } else {
         audioElement.play();

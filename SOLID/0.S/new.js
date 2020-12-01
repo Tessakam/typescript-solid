@@ -1,3 +1,4 @@
+"use strict";
 var Car = /** @class */ (function () {
     function Car(MAXIMUM_FUEL_CAPACITY) {
         //it is convention to start property names in TypeScript with an underscore.
@@ -28,7 +29,7 @@ var Car = /** @class */ (function () {
         this._fuel = Math.min(fuel + this._fuel, this.MAXIMUM_FUEL_CAPACITY);
     };
     Car.prototype.drive = function (status) {
-        if (status === false || this._fuel <= 0) {
+        if (!status || this._fuel <= 0) {
             //what I am doing here is a good principle called "failing early"
             // If you have some conditions you need to check, that will exclude most of the code in your function check that first
             // This prevents your "happy path" of code to be deeply indented.
@@ -59,9 +60,10 @@ var Engine = /** @class */ (function () {
     return Engine;
 }());
 var MusicPlayer = /** @class */ (function () {
-    function MusicPlayer() {
+    function MusicPlayer(status) {
         this._musicLevel = 0;
         this._oldMusicLevel = 50;
+        this._status = status;
     }
     Object.defineProperty(MusicPlayer.prototype, "status", {
         get: function () {
@@ -86,11 +88,11 @@ var MusicPlayer = /** @class */ (function () {
     });
     MusicPlayer.prototype.turnMusicOn = function () {
         this._musicLevel = this._oldMusicLevel;
-        this._status = "Music on!"; // see type above
+        this._status = "Music off!"; // see type above
     };
     MusicPlayer.prototype.turnMusicOff = function () {
         this._musicLevel = 0;
-        this._status = "Music off!"; // see type above
+        this._status = "Music on!"; // see type above
     };
     return MusicPlayer;
 }());
@@ -110,31 +112,31 @@ var car = new Car(100);
 var engine = new Engine();
 var musicPlayer = new MusicPlayer();
 musicToggleElement.addEventListener('click', function () {
-    if (car.musicLevel === 0) {
-        car.turnMusicOn();
-        musicSliderElement.value = car.musicLevel.toString();
+    if (musicPlayer.musicLevel === 0) {
+        musicPlayer.turnMusicOn();
+        musicSliderElement.value = musicPlayer.musicLevel.toString();
         musicToggleElement.innerText = 'Turn music off';
         return;
     }
     musicToggleElement.innerText = 'Turn music on';
-    car.turnMusicOff();
+    musicPlayer.turnMusicOff();
 });
 //I use input instead of change, because then the value changes when I move the mouse, not only on release
 musicSliderElement.addEventListener('input', function (event) {
     var target = (event.target);
-    car.musicLevel = target.value;
-    audioElement.volume = car.musicLevel / 100;
+    musicPlayer.musicLevel = target.value;
+    audioElement.volume = musicPlayer.musicLevel / 100;
     //@todo when you are repeating the same text over and over again maybe we should have made some constants for it? Can you do improve on this?
-    musicToggleElement.innerText = car.musicLevel ? 'Turn music off' : 'Turn music on';
+    musicToggleElement.innerText = musicPlayer.musicLevel ? 'Turn music off' : 'Turn music on';
 });
 engineToggleElement.addEventListener('click', function () {
-    if (car.engineStatus) {
-        car.turnEngineOff();
+    if (engine.status) {
+        engine.turnEngineOff();
         engineToggleElement.innerText = 'Turn engine on';
         return;
     }
     engineToggleElement.innerText = 'Turn engine off';
-    car.turnEngineOn();
+    engine.turnEngineOn();
 });
 addFuelForm.addEventListener('submit', function (event) {
     event.preventDefault();
@@ -148,7 +150,7 @@ setInterval(function () {
     milesElement.innerText = (car.miles);
     // This .toString() will actually convert the value in JavaScript from an integer to a string
     fuelLevelElement.innerText = car.fuel.toString();
-    if (car.musicLevel === 0) {
+    if (musicPlayer.musicLevel === 0) {
         audioElement.pause();
     }
     else {
