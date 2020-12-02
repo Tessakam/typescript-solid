@@ -6,6 +6,7 @@ interface Discount {
     _value: number;
 }
 
+
 class VariableDiscount implements Discount {
     _type: discountType = "variable";
     _value: number;
@@ -16,6 +17,14 @@ class VariableDiscount implements Discount {
         if (value <= 0) {
             throw new Error('You cannot create a ' + this._type + ' discount with a negative value');
         }
+    }
+
+    getDiscount(price: number): number {
+        return (price - (price * this._value / 100));
+    }
+
+    showCalculation(price: number): string {
+        return price + " € -  " + this._value + "%";
     }
 }
 
@@ -30,6 +39,14 @@ class FixedDiscount implements Discount {
             throw new Error('You cannot create a ' + this._type + ' discount with a negative value');
         }
     }
+
+    getDiscount(price: number): number {
+        return Math.max(0, price - this._value);
+    }
+
+    showCalculation(price: number): string {
+        return price + "€ -  " + this._value + "€ (min 0 €)";
+    }
 }
 
 class NoDiscount implements Discount {
@@ -43,50 +60,14 @@ class NoDiscount implements Discount {
             throw new Error('You cannot create a ' + this._type + ' discount with a negative value');
         }
     }
-}
 
-
-// original code
-class Discount {
-    private _type: discountType;
-    private _value: number;
-
-}
-
-apply(price
-:
-number
-) :
-number
-{
-    //@todo: instead of using magic values as string in this, it would be a lot better to change them into constant. This would protect us from misspellings. Can you improve this?
-    if (this._type === "none") {
+    getDiscount(price: number): number {
         return price;
-    } else if (this._type === "variable") {
-        return (price - (price * this._value / 100));
-    } else if (this._type === "fixed") {
-        return Math.max(0, price - this._value);
-    } else {
-        throw new Error('Invalid type of discount');
     }
-}
 
-showCalculation(price
-:
-number
-) :
-string
-{
-    if (this._type === "none") {
+    showCalculation(price: number): string {
         return "No discount";
-    } else if (this._type === "variable") {
-        return price + " € -  " + this._value + "%";
-    } else if (this._type === "fixed") {
-        return price + "€ -  " + this._value + "€ (min 0 €)";
-    } else {
-        throw new Error('Invalid type of discount');
     }
-}
 }
 
 class Product {

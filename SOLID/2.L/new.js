@@ -8,6 +8,12 @@ var VariableDiscount = /** @class */ (function () {
             throw new Error('You cannot create a ' + this._type + ' discount with a negative value');
         }
     }
+    VariableDiscount.prototype.getDiscount = function (price) {
+        return (price - (price * this._value / 100));
+    };
+    VariableDiscount.prototype.showCalculation = function (price) {
+        return price + " € -  " + this._value + "%";
+    };
     return VariableDiscount;
 }());
 var FixedDiscount = /** @class */ (function () {
@@ -19,6 +25,12 @@ var FixedDiscount = /** @class */ (function () {
             throw new Error('You cannot create a ' + this._type + ' discount with a negative value');
         }
     }
+    FixedDiscount.prototype.getDiscount = function (price) {
+        return Math.max(0, price - this._value);
+    };
+    FixedDiscount.prototype.showCalculation = function (price) {
+        return price + "€ -  " + this._value + "€ (min 0 €)";
+    };
     return FixedDiscount;
 }());
 var NoDiscount = /** @class */ (function () {
@@ -30,47 +42,14 @@ var NoDiscount = /** @class */ (function () {
             throw new Error('You cannot create a ' + this._type + ' discount with a negative value');
         }
     }
+    NoDiscount.prototype.getDiscount = function (price) {
+        return price;
+    };
+    NoDiscount.prototype.showCalculation = function (price) {
+        return "No discount";
+    };
     return NoDiscount;
 }());
-// original code
-var Discount = /** @class */ (function () {
-    function Discount() {
-    }
-    return Discount;
-}());
-apply(price, number);
-number;
-{
-    //@todo: instead of using magic values as string in this, it would be a lot better to change them into constant. This would protect us from misspellings. Can you improve this?
-    if (this._type === "none") {
-        return price;
-    }
-    else if (this._type === "variable") {
-        return (price - (price * this._value / 100));
-    }
-    else if (this._type === "fixed") {
-        return Math.max(0, price - this._value);
-    }
-    else {
-        throw new Error('Invalid type of discount');
-    }
-}
-showCalculation(price, number);
-string;
-{
-    if (this._type === "none") {
-        return "No discount";
-    }
-    else if (this._type === "variable") {
-        return price + " € -  " + this._value + "%";
-    }
-    else if (this._type === "fixed") {
-        return price + "€ -  " + this._value + "€ (min 0 €)";
-    }
-    else {
-        throw new Error('Invalid type of discount');
-    }
-}
 var Product = /** @class */ (function () {
     function Product(name, price, discount) {
         this._name = name;
