@@ -56,8 +56,24 @@ class Admin implements Auth {
     }
 }
 
-class GoogleBot implements UserAuth {
+// Google bot to be able to login on the site, he can only use the google option to log in.
+class GoogleBot implements Auth {
+    private _password : string = 'Alexa';
 
+    checkPassword(password: string): boolean {
+        return false;
+    }
+
+    resetPassword() {
+        this._password = prompt('What is your new password?');
+    }
+
+    checkGoogleLogin(token : string): boolean {
+        return false;
+    }
+
+    setGoogleToken(token : string) {
+    }
 
 }
 
@@ -70,6 +86,7 @@ const resetPasswordElement = <HTMLAnchorElement>document.querySelector('#resetPa
 
 let guest = new User;
 let admin = new Admin;
+let Google = new GoogleBot;
 
 document.querySelector('#login-form').addEventListener('submit', (event) => {
     event.preventDefault();

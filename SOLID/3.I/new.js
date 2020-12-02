@@ -38,9 +38,22 @@ var Admin = /** @class */ (function () {
     };
     return Admin;
 }());
+// Google bot to be able to login on the site, he can only use the google option to log in.
 var GoogleBot = /** @class */ (function () {
     function GoogleBot() {
+        this._password = 'Alexa';
     }
+    GoogleBot.prototype.checkPassword = function (password) {
+        return false;
+    };
+    GoogleBot.prototype.resetPassword = function () {
+        this._password = prompt('What is your new password?');
+    };
+    GoogleBot.prototype.checkGoogleLogin = function (token) {
+        return false;
+    };
+    GoogleBot.prototype.setGoogleToken = function (token) {
+    };
     return GoogleBot;
 }());
 var passwordElement = document.querySelector('#password');
@@ -51,6 +64,7 @@ var loginAsAdminElement = document.querySelector('#loginAsAdmin');
 var resetPasswordElement = document.querySelector('#resetPassword');
 var guest = new User;
 var admin = new Admin;
+var Google = new GoogleBot;
 document.querySelector('#login-form').addEventListener('submit', function (event) {
     event.preventDefault();
     var user = loginAsAdminElement.checked ? admin : guest;
