@@ -16,7 +16,6 @@ class Dog {
     get makeSound(){
         return 'Woef';
     }
-
 }
 
 class Cat {
@@ -80,7 +79,8 @@ class Penguin {
 }
 
 class Zoo {
-    private _animals : Array<Object> = new Array<Object>();
+
+    private _animals: Array<Object> = new Array<Object>();
 
     public addAnimal(animal: object) {
         this._animals.push(animal);
@@ -89,11 +89,8 @@ class Zoo {
     get animals(): Array<Object> {
         return this._animals;
     }
-
-    public makeSound(animal: object) : string {
-        }
-    }
 }
+
 let zoo = new Zoo;
 zoo.addAnimal(new Cat);
 zoo.addAnimal(new Dog);
@@ -101,5 +98,6 @@ zoo.addAnimal(new Parrot);
 zoo.addAnimal(new Penguin);
 
 zoo.animals.forEach((animal) => {
-    document.querySelector('#target').innerHTML += (animal.type + ": " + zoo.makeSound(animal) + "<br>");
+    document.querySelector('#target').innerHTML += (animal.type + ": " + animal.makeSound+ "<br>");
+
 });

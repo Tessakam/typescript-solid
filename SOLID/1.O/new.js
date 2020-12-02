@@ -1,3 +1,4 @@
+"use strict";
 var Dog = /** @class */ (function () {
     function Dog() {
     }
@@ -128,8 +129,6 @@ var Zoo = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
-    Zoo.prototype.makeSound = function (animal) {
-    };
     return Zoo;
 }());
 var zoo = new Zoo;
@@ -138,5 +137,5 @@ zoo.addAnimal(new Dog);
 zoo.addAnimal(new Parrot);
 zoo.addAnimal(new Penguin);
 zoo.animals.forEach(function (animal) {
-    document.querySelector('#target').innerHTML += (animal.type + ": " + zoo.makeSound(animal) + "<br>");
+    document.querySelector('#target').innerHTML += (animal.type + ": " + animal.makeSound + "<br>");
 });
